@@ -1,9 +1,9 @@
 # Grafana
 
-Deploys Grafana and some supporting services on a Kubernetes cluster running in GCP.
+Deploys Grafana and some supporting services on a Kubernetes cluster.
 
 This module makes use of the
-[`stable/grafana`](https://github.com/helm/charts/tree/master/stable/grafana) chart.
+[community](https://github.com/grafana/helm-charts/tree/main/charts/grafana) chart.
 
 ## Requirements
 

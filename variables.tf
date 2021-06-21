@@ -223,6 +223,12 @@ variable "env_from_secret" {
   default     = ""
 }
 
+variable "enable_service_links" {
+  description = "Inject Kubernetes services as environment variables."
+  type        = bool
+  default     = true
+}
+
 variable "extra_secret_mounts" {
   description = "Additional grafana server secret mounts"
   default     = []

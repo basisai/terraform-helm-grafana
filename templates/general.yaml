@@ -73,11 +73,20 @@ image:
   # pullSecrets:
   #   - myRegistrKeySecretName
 
+testFramework:
+  enabled: true
+  image: "bats/bats"
+  tag: "v1.1.0"
+  imagePullPolicy: IfNotPresent
+  securityContext: {}
+
 securityContext:
   runAsUser: ${run_as_user}
   runAsGroup: ${run_as_group}
   fsGroup: ${fs_group}
 
+containerSecurityContext:
+  {}
 
 extraConfigmapMounts: ${extra_configmap_mounts}
   # - name: certs-configmap
@@ -91,6 +100,9 @@ extraEmptyDirMounts: ${extra_empty_dir_mounts}
   #   mountPath: /etc/grafana/provisioning/notifiers
 
 
+# Apply extra labels to common labels.
+extraLabels: {}
+
 ## Assign a PriorityClassName to pods if set
 priorityClassName: ${priority_class_name}
 
@@ -99,8 +111,18 @@ downloadDashboardsImage:
   tag: latest
   pullPolicy: IfNotPresent
 
+downloadDashboards:
+  env: {}
+  envFromSecret: ""
+  resources: {}
+
 ## Pod Annotations
 podAnnotations: ${pod_annotations}
+
+## Pod Labels
+# podLabels: {}
+
+podPortName: grafana
 
 ## Deployment annotations
 annotations: ${annotations}
@@ -110,12 +132,40 @@ annotations: ${annotations}
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
+  enabled: true
   type: ${service_type}
   port: ${service_port}
   targetPort: ${service_target_port}
     # targetPort: 4181 To be used with a proxy extraContainer
   annotations: ${service_annotations}
   labels: ${service_labels}
+  portName: service
+
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator
+  ##
+  enabled: false
+  path: /metrics
+  #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
+  labels: {}
+  interval: 1m
+  scheme: http
+  tlsConfig: {}
+  scrapeTimeout: 30s
+  relabelings: []
+
+extraExposePorts: []
+ # - name: keycloak
+ #   port: 8080
+ #   targetPort: 8080
+ #   type: ClusterIP
+
+# overrides pod.spec.hostAliases in the grafana deployment's pods
+hostAliases: []
+  # - ip: "1.2.3.4"
+  #   hostnames:
+  #     - "my.host.com"
 
 ingress:
   enabled: ${ingress_enabled}
@@ -124,8 +174,26 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   labels: ${ingress_labels}
   path: /
+
+  # pathType is only for k8s > 1.19
+  pathType: Prefix
+
   hosts: ${ingress_hosts}
     # - chart-example.local
+  ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+  extraPaths: []
+  # - path: /*
+  #   backend:
+  #     serviceName: ssl-redirect
+  #     servicePort: use-annotation
+  ## Or for k8s > 1.19
+  # - path: /*
+  #   pathType: Prefix
+  #   backend:
+  #     service:
+  #       name: ssl-redirect
+  #       port:
+  #         name: service
   tls: ${ingress_tls}
   #  - secretName: chart-example-tls
   #    hosts:
@@ -177,6 +245,7 @@ extraContainers: ${extra_containers}
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  type: pvc
   enabled: ${persistence_enabled}
   storageClassName: ${persistence_storage_class_name}
   accessModes:
@@ -185,6 +254,17 @@ persistence:
   annotations: ${persistence_annotations}
   # subPath: ""
   existingClaim: ${persistence_existing_claim}
+
+  ## If persistence is not enabled, this allows to mount the
+  ## local storage in-memory to improve performance
+  ##
+  inMemory:
+    enabled: false
+    ## The maximum usage on memory medium EmptyDir would be
+    ## the minimum value between the SizeLimit specified
+    ## here and the sum of memory limits of all containers in a pod
+    ##
+    # sizeLimit: 300Mi
 
 initChownData:
   ## If false, data ownership will not be reset at startup
@@ -236,9 +316,27 @@ command: ${command}
 ## Extra environment variables that will be pass onto deployment pods
 env: ${env}
 
+## "valueFrom" environment variable references that will be added to deployment pods
+## ref: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.17/#envvarsource-v1-core
+## Renders in container spec as:
+##   env:
+##     ...
+##     - name: <key>
+##       valueFrom:
+##         <value rendered as YAML>
+envValueFrom: {}
+
 ## The name of a secret in the same kubernetes namespace which contain values to be added to the environment
 ## This can be useful for auth tokens, etc
 envFromSecret: ${env_from_secret}
+
+## Sensible environment variables that will be rendered as new secret object
+## This can be useful for auth tokens, etc
+envRenderSecret: {}
+
+# Inject Kubernetes services as environment variables.
+# See https://kubernetes.io/docs/concepts/services-networking/connect-applications-service/#environment-variables
+enableServiceLinks: ${enable_service_links}
 
 ## Additional grafana server secret mounts
 # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
@@ -395,11 +493,60 @@ smtp:
   userKey: ${smtp_user_key}
   passwordKey: ${smtp_password_key}
 
-## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
-## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
-sidecar:
-  image: kiwigrid/k8s-sidecar:0.0.13
-  imagePullPolicy: IfNotPresent
+## Override the deployment namespace
+##
+namespaceOverride: ""
+
+## Number of old ReplicaSets to retain
+##
+revisionHistoryLimit: 10
+
+## Add a seperate remote image renderer deployment/service
+imageRenderer:
+  # Enable the image-renderer deployment & service
+  enabled: false
+  replicas: 1
+  image:
+    # image-renderer Image repository
+    repository: grafana/grafana-image-renderer
+    # image-renderer Image tag
+    tag: latest
+    # image-renderer Image sha (optional)
+    sha: ""
+    # image-renderer ImagePullPolicy
+    pullPolicy: Always
+  # extra environment variables
+  env:
+    HTTP_HOST: "0.0.0.0"
+    # RENDERING_ARGS: --disable-gpu,--window-size=1280x758
+    # RENDERING_MODE: clustered
+  # image-renderer deployment serviceAccount
+  serviceAccountName: ""
+  # image-renderer deployment securityContext
+  securityContext: {}
+  # image-renderer deployment Host Aliases
+  hostAliases: []
+  # image-renderer deployment priority class
+  priorityClassName: ''
+  service:
+    # Enable the image-renderer service
+    enabled: true
+    # image-renderer service port name
+    portName: 'http'
+    # image-renderer service port used by both service and deployment
+    port: 8081
+    targetPort: 8081
+  # In case a sub_path is used this needs to be added to the image renderer callback
+  grafanaSubPath: ""
+  # name of the image-renderer port on the pod
+  podPortName: http
+  # number of image-renderer replica sets to keep
+  revisionHistoryLimit: 10
+  networkPolicy:
+    # Enable a NetworkPolicy to limit inbound traffic to only the created grafana pods
+    limitIngress: true
+    # Enable a NetworkPolicy to limit outbound traffic to only the created grafana pods
+    limitEgress: false
   resources: {}
 #   limits:
 #     cpu: 100m
@@ -407,21 +554,3 @@ sidecar:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
-  dashboards:
-    enabled: false
-    # label that the configmaps with dashboards are marked with
-    label: grafana_dashboard
-    # folder in the pod that should hold the collected dashboards
-    folder: /tmp/dashboards
-    # If specified, the sidecar will search for dashboard config-maps inside this namespace.
-    # Otherwise the namespace in which the sidecar is running will be used.
-    # It's also possible to specify ALL to search in all namespaces
-    searchNamespace: null
-  datasources:
-    enabled: false
-    # label that the configmaps with datasources are marked with
-    label: grafana_datasource
-    # If specified, the sidecar will search for datasource config-maps inside this namespace.
-    # Otherwise the namespace in which the sidecar is running will be used.
-    # It's also possible to specify ALL to search in all namespaces
-    searchNamespace: null

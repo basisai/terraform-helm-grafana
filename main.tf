@@ -8,14 +8,12 @@ resource "helm_release" "grafana" {
   max_history = var.max_history
 
   values = [
-    data.template_file.general.rendered,
+    templatefile("${path.module}/templates/general.yaml", local.values),
   ]
 }
 
-data "template_file" "general" {
-  template = file("${path.module}/templates/general.yaml")
-
-  vars = {
+locals {
+  values = {
     replicas          = var.replicas
     image             = var.image
     tag               = var.tag
@@ -48,6 +46,8 @@ data "template_file" "general" {
     env_from_secret     = var.env_from_secret
     extra_secret_mounts = jsonencode(var.extra_secret_mounts)
     extra_volume_mounts = jsonencode(var.extra_volume_mounts)
+
+    enable_service_links = var.enable_service_links
 
     service_type        = var.service_type
     service_port        = var.service_port
