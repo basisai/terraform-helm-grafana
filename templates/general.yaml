@@ -18,6 +18,7 @@ serviceAccount:
   create: true
   name: ${service_account}
   annotations: ${service_account_annotations}
+  autoMount: true
 
 replicas: ${replicas}
 
@@ -80,10 +81,7 @@ testFramework:
   imagePullPolicy: IfNotPresent
   securityContext: {}
 
-securityContext:
-  runAsUser: ${run_as_user}
-  runAsGroup: ${run_as_group}
-  fsGroup: ${fs_group}
+securityContext: ${security_context}
 
 containerSecurityContext:
   {}
@@ -94,11 +92,9 @@ extraConfigmapMounts: ${extra_configmap_mounts}
   #   configMap: certs-configmap
   #   readOnly: true
 
-
 extraEmptyDirMounts: ${extra_empty_dir_mounts}
   # - name: provisioning-notifiers
   #   mountPath: /etc/grafana/provisioning/notifiers
-
 
 # Apply extra labels to common labels.
 extraLabels: {}
@@ -276,7 +272,7 @@ initChownData:
   ##
   image:
     repository: busybox
-    tag: "1.30"
+    tag: "1.31.1"
     pullPolicy: IfNotPresent
 
   ## initChownData resource requests and limits
@@ -492,6 +488,83 @@ smtp:
   existingSecret: ${smtp_existing_secret}
   userKey: ${smtp_user_key}
   passwordKey: ${smtp_password_key}
+
+## Sidecars that collect the configmaps with specified label and stores the included files them into the respective folders
+## Requires at least Grafana 5 to work and can't be used together with parameters dashboardProviders, datasources and dashboards
+sidecar:
+  image:
+    repository: quay.io/kiwigrid/k8s-sidecar
+    tag: 1.12.2
+    sha: ""
+  imagePullPolicy: IfNotPresent
+  resources: {}
+#   limits:
+#     cpu: 100m
+#     memory: 100Mi
+#   requests:
+#     cpu: 50m
+#     memory: 50Mi
+  # skipTlsVerify Set to true to skip tls verification for kube api calls
+  # skipTlsVerify: true
+  enableUniqueFilenames: false
+  dashboards:
+    enabled: false
+    SCProvider: true
+    # label that the configmaps with dashboards are marked with
+    label: grafana_dashboard
+    # value of label that the configmaps with dashboards are set to
+    labelValue: null
+    # folder in the pod that should hold the collected dashboards (unless `defaultFolderName` is set)
+    folder: /tmp/dashboards
+    # The default folder name, it will create a subfolder under the `folder` and put dashboards in there instead
+    defaultFolderName: null
+    # If specified, the sidecar will search for dashboard config-maps inside this namespace.
+    # Otherwise the namespace in which the sidecar is running will be used.
+    # It's also possible to specify ALL to search in all namespaces
+    searchNamespace: null
+    # search in configmap, secret or both
+    resource: both
+    # If specified, the sidecar will look for annotation with this name to create folder and put graph here.
+    # You can use this parameter together with `provider.foldersFromFilesStructure`to annotate configmaps and create folder structure.
+    folderAnnotation: null
+    # provider configuration that lets grafana manage the dashboards
+    provider:
+      # name of the provider, should be unique
+      name: sidecarProvider
+      # orgid as configured in grafana
+      orgid: 1
+      # folder in which the dashboards should be imported in grafana
+      folder: ''
+      # type of the provider
+      type: file
+      # disableDelete to activate a import-only behaviour
+      disableDelete: false
+      # allow updating provisioned dashboards from the UI
+      allowUiUpdates: false
+      # allow Grafana to replicate dashboard structure from filesystem
+      foldersFromFilesStructure: false
+  datasources:
+    enabled: false
+    # label that the configmaps with datasources are marked with
+    label: grafana_datasource
+    # value of label that the configmaps with datasources are set to
+    labelValue: null
+    # If specified, the sidecar will search for datasource config-maps inside this namespace.
+    # Otherwise the namespace in which the sidecar is running will be used.
+    # It's also possible to specify ALL to search in all namespaces
+    searchNamespace: null
+    # search in configmap, secret or both
+    resource: both
+  notifiers:
+    enabled: false
+    # label that the configmaps with notifiers are marked with
+    label: grafana_notifier
+    # If specified, the sidecar will search for notifier config-maps inside this namespace.
+    # Otherwise the namespace in which the sidecar is running will be used.
+    # It's also possible to specify ALL to search in all namespaces
+    searchNamespace: null
+    # search in configmap, secret or both
+    resource: both
 
 ## Override the deployment namespace
 ##

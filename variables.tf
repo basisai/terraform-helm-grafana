@@ -15,7 +15,7 @@ variable "chart_repository" {
 
 variable "chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
-  default     = "6.13.2"
+  default     = "6.14.1"
 }
 
 variable "chart_namespace" {
@@ -50,27 +50,12 @@ variable "image" {
 
 variable "tag" {
   description = "Docker Image tag for Grafana"
-  default     = "6.0.2"
+  default     = "8.0.6"
 }
 
 variable "image_pull_policy" {
   description = "Image Pull Policy for Grafana"
   default     = "IfNotPresent"
-}
-
-variable "run_as_user" {
-  description = "UID to run the Grafana container in"
-  default     = "472"
-}
-
-variable "run_as_group" {
-  description = "GID to run the Grafana container in"
-  default     = "472"
-}
-
-variable "fs_group" {
-  description = "GID for the File system group for the Grafana container"
-  default     = "472"
 }
 
 variable "extra_configmap_mounts" {
@@ -166,6 +151,15 @@ variable "tolerations" {
 variable "affinity" {
   description = "Pod affinity"
   default     = {}
+}
+
+variable "security_context" {
+  description = "Security context for pods defined as a map which will be serialized to JSON."
+  default = {
+    runAsGroup = 472
+    runAsUser  = 472
+    fsGroup    = 472
+  }
 }
 
 variable "extra_init_containers" {

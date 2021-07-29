@@ -22,9 +22,6 @@ locals {
     service_account             = var.service_account
     service_account_annotations = jsonencode(var.service_account_annotations)
 
-    run_as_user       = var.run_as_user
-    run_as_group      = var.run_as_group
-    fs_group          = var.fs_group
     psp_enable        = var.psp_enable
     psp_use_app_armor = var.psp_use_app_armor
     pdb               = jsonencode(var.pdb)
@@ -35,12 +32,13 @@ locals {
 
     priority_class_name = var.priority_class_name
 
-    pod_annotations = jsonencode(var.pod_annotations)
-    annotations     = jsonencode(var.annotations)
-    resources       = jsonencode(var.resources)
-    node_selector   = jsonencode(var.node_selector)
-    tolerations     = jsonencode(var.tolerations)
-    affinity        = jsonencode(var.affinity)
+    pod_annotations  = jsonencode(var.pod_annotations)
+    annotations      = jsonencode(var.annotations)
+    resources        = jsonencode(var.resources)
+    node_selector    = jsonencode(var.node_selector)
+    tolerations      = jsonencode(var.tolerations)
+    affinity         = jsonencode(var.affinity)
+    security_context = jsonencode(var.security_context)
 
     env                 = jsonencode(var.env)
     env_from_secret     = var.env_from_secret
