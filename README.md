@@ -9,14 +9,14 @@ This module makes use of the
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 1.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | ~> 2.1 |
 
 ## Modules
 
@@ -37,7 +37,7 @@ No modules.
 | <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name to provision | `string` | `"grafana"` | no |
 | <a name="input_chart_namespace"></a> [chart\_namespace](#input\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |
 | <a name="input_chart_repository"></a> [chart\_repository](#input\_chart\_repository) | Helm repository for the chart | `string` | `"https://grafana.github.io/helm-charts"` | no |
-| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"6.13.2"` | no |
+| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"6.14.1"` | no |
 | <a name="input_command"></a> [command](#input\_command) | Define command to be executed at startup by grafana container | `list` | `[]` | no |
 | <a name="input_dashboard_providers"></a> [dashboard\_providers](#input\_dashboard\_providers) | YAML string to configure grafana dashboard providersref: http://docs.grafana.org/administration/provisioning/#dashboards `path` must be /var/lib/grafana/dashboards/<provider\_name> | `string` | `""` | no |
 | <a name="input_dashboards"></a> [dashboards](#input\_dashboards) | YAML string to configure grafana dashboard to import | `string` | `""` | no |
@@ -52,7 +52,6 @@ No modules.
 | <a name="input_extra_init_containers"></a> [extra\_init\_containers](#input\_extra\_init\_containers) | Extra init containers | `list` | `[]` | no |
 | <a name="input_extra_secret_mounts"></a> [extra\_secret\_mounts](#input\_extra\_secret\_mounts) | Additional grafana server secret mounts | `list` | `[]` | no |
 | <a name="input_extra_volume_mounts"></a> [extra\_volume\_mounts](#input\_extra\_volume\_mounts) | Additional grafana server volume mounts | `list` | `[]` | no |
-| <a name="input_fs_group"></a> [fs\_group](#input\_fs\_group) | GID for the File system group for the Grafana container | `string` | `"472"` | no |
 | <a name="input_image"></a> [image](#input\_image) | Docker Image for Grafana | `string` | `"grafana/grafana"` | no |
 | <a name="input_image_pull_policy"></a> [image\_pull\_policy](#input\_image\_pull\_policy) | Image Pull Policy for Grafana | `string` | `"IfNotPresent"` | no |
 | <a name="input_ingress_annotations"></a> [ingress\_annotations](#input\_ingress\_annotations) | Annotations for ingress | `map` | `{}` | no |
@@ -82,8 +81,7 @@ No modules.
 | <a name="input_release_name"></a> [release\_name](#input\_release\_name) | Helm release name for Grafana | `string` | `"grafana"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of replicas of Grafana to run | `number` | `1` | no |
 | <a name="input_resources"></a> [resources](#input\_resources) | Resources for Grafana container | `map` | `{}` | no |
-| <a name="input_run_as_group"></a> [run\_as\_group](#input\_run\_as\_group) | GID to run the Grafana container in | `string` | `"472"` | no |
-| <a name="input_run_as_user"></a> [run\_as\_user](#input\_run\_as\_user) | UID to run the Grafana container in | `string` | `"472"` | no |
+| <a name="input_security_context"></a> [security\_context](#input\_security\_context) | Security context for pods defined as a map which will be serialized to JSON. | `map` | <pre>{<br>  "fsGroup": 472,<br>  "runAsGroup": 472,<br>  "runAsUser": 472<br>}</pre> | no |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | Name of the Service Account for Grafana | `string` | `""` | no |
 | <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | Annotations for service account | `map` | `{}` | no |
 | <a name="input_service_annotations"></a> [service\_annotations](#input\_service\_annotations) | Annotations for the service | `map` | `{}` | no |
@@ -94,7 +92,7 @@ No modules.
 | <a name="input_smtp_existing_secret"></a> [smtp\_existing\_secret](#input\_smtp\_existing\_secret) | Existing secret containing the SMTP credentials | `string` | `""` | no |
 | <a name="input_smtp_password_key"></a> [smtp\_password\_key](#input\_smtp\_password\_key) | Key in the secret containing the SMTP password | `string` | `"password"` | no |
 | <a name="input_smtp_user_key"></a> [smtp\_user\_key](#input\_smtp\_user\_key) | Key in the secret containing the SMTP username | `string` | `"user"` | no |
-| <a name="input_tag"></a> [tag](#input\_tag) | Docker Image tag for Grafana | `string` | `"6.0.2"` | no |
+| <a name="input_tag"></a> [tag](#input\_tag) | Docker Image tag for Grafana | `string` | `"8.0.6"` | no |
 | <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Tolerations for pods | `list` | `[]` | no |
 
 ## Outputs
