@@ -2,14 +2,13 @@
 
 Deploys Grafana and some supporting services on a Kubernetes cluster.
 
-This module makes use of the
-[community](https://github.com/grafana/helm-charts/tree/main/charts/grafana) chart.
+This module makes use of the [community](https://github.com/grafana/helm-charts/tree/main/charts/grafana) chart.
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.15 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.1 |
 
 ## Providers
@@ -37,7 +36,7 @@ No modules.
 | <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name to provision | `string` | `"grafana"` | no |
 | <a name="input_chart_namespace"></a> [chart\_namespace](#input\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |
 | <a name="input_chart_repository"></a> [chart\_repository](#input\_chart\_repository) | Helm repository for the chart | `string` | `"https://grafana.github.io/helm-charts"` | no |
-| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"6.14.1"` | no |
+| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `"6.16.6"` | no |
 | <a name="input_command"></a> [command](#input\_command) | Define command to be executed at startup by grafana container | `list` | `[]` | no |
 | <a name="input_dashboard_providers"></a> [dashboard\_providers](#input\_dashboard\_providers) | YAML string to configure grafana dashboard providersref: http://docs.grafana.org/administration/provisioning/#dashboards `path` must be /var/lib/grafana/dashboards/<provider\_name> | `string` | `""` | no |
 | <a name="input_dashboards"></a> [dashboards](#input\_dashboards) | YAML string to configure grafana dashboard to import | `string` | `""` | no |
@@ -54,6 +53,16 @@ No modules.
 | <a name="input_extra_volume_mounts"></a> [extra\_volume\_mounts](#input\_extra\_volume\_mounts) | Additional grafana server volume mounts | `list` | `[]` | no |
 | <a name="input_image"></a> [image](#input\_image) | Docker Image for Grafana | `string` | `"grafana/grafana"` | no |
 | <a name="input_image_pull_policy"></a> [image\_pull\_policy](#input\_image\_pull\_policy) | Image Pull Policy for Grafana | `string` | `"IfNotPresent"` | no |
+| <a name="input_image_renderer_enabled"></a> [image\_renderer\_enabled](#input\_image\_renderer\_enabled) | Enable the image-renderer deployment and service | `bool` | `true` | no |
+| <a name="input_image_renderer_env"></a> [image\_renderer\_env](#input\_image\_renderer\_env) | image-renderer extra environment variables | `map` | <pre>{<br>  "HTTP_HOST": "0.0.0.0"<br>}</pre> | no |
+| <a name="input_image_renderer_image_repository"></a> [image\_renderer\_image\_repository](#input\_image\_renderer\_image\_repository) | image-renderer Image repository | `string` | `"grafana/grafana-image-renderer"` | no |
+| <a name="input_image_renderer_image_tag"></a> [image\_renderer\_image\_tag](#input\_image\_renderer\_image\_tag) | image-renderer Image tag | `string` | `"latest"` | no |
+| <a name="input_image_renderer_port"></a> [image\_renderer\_port](#input\_image\_renderer\_port) | image-renderer service port used by both service and deployment | `number` | `8081` | no |
+| <a name="input_image_renderer_replicas"></a> [image\_renderer\_replicas](#input\_image\_renderer\_replicas) | Number of replicas of image-renderer to run | `number` | `1` | no |
+| <a name="input_image_renderer_resources"></a> [image\_renderer\_resources](#input\_image\_renderer\_resources) | Resources for image-renderer container | `map` | `{}` | no |
+| <a name="input_image_renderer_security_context"></a> [image\_renderer\_security\_context](#input\_image\_renderer\_security\_context) | image-renderer deployment securityContext | `map` | `{}` | no |
+| <a name="input_image_renderer_service_account"></a> [image\_renderer\_service\_account](#input\_image\_renderer\_service\_account) | image-renderer deployment serviceAccount | `string` | `""` | no |
+| <a name="input_image_renderer_target_port"></a> [image\_renderer\_target\_port](#input\_image\_renderer\_target\_port) | image-renderer service targetPort used by both service and deployment | `number` | `8081` | no |
 | <a name="input_ingress_annotations"></a> [ingress\_annotations](#input\_ingress\_annotations) | Annotations for ingress | `map` | `{}` | no |
 | <a name="input_ingress_enabled"></a> [ingress\_enabled](#input\_ingress\_enabled) | Enable Ingress | `string` | `"false"` | no |
 | <a name="input_ingress_hosts"></a> [ingress\_hosts](#input\_ingress\_hosts) | Hosts for ingress | `list` | `[]` | no |
@@ -92,7 +101,7 @@ No modules.
 | <a name="input_smtp_existing_secret"></a> [smtp\_existing\_secret](#input\_smtp\_existing\_secret) | Existing secret containing the SMTP credentials | `string` | `""` | no |
 | <a name="input_smtp_password_key"></a> [smtp\_password\_key](#input\_smtp\_password\_key) | Key in the secret containing the SMTP password | `string` | `"password"` | no |
 | <a name="input_smtp_user_key"></a> [smtp\_user\_key](#input\_smtp\_user\_key) | Key in the secret containing the SMTP username | `string` | `"user"` | no |
-| <a name="input_tag"></a> [tag](#input\_tag) | Docker Image tag for Grafana | `string` | `"8.0.6"` | no |
+| <a name="input_tag"></a> [tag](#input\_tag) | Docker Image tag for Grafana | `string` | `"8.1.2"` | no |
 | <a name="input_tolerations"></a> [tolerations](#input\_tolerations) | Tolerations for pods | `list` | `[]` | no |
 
 ## Outputs

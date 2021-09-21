@@ -15,7 +15,7 @@ variable "chart_repository" {
 
 variable "chart_version" {
   description = "Version of Chart to install. Set to empty to install the latest version"
-  default     = "6.14.1"
+  default     = "6.16.6"
 }
 
 variable "chart_namespace" {
@@ -50,7 +50,7 @@ variable "image" {
 
 variable "tag" {
   description = "Docker Image tag for Grafana"
-  default     = "8.0.6"
+  default     = "8.1.2"
 }
 
 variable "image_pull_policy" {
@@ -328,4 +328,57 @@ variable "pdb" {
   default = {
     minAvailable = 1
   }
+}
+
+variable "image_renderer_enabled" {
+  description = "Enable the image-renderer deployment and service"
+  type        = bool
+  default     = true
+}
+
+variable "image_renderer_replicas" {
+  description = "Number of replicas of image-renderer to run"
+  default     = 1
+}
+
+variable "image_renderer_image_repository" {
+  description = "image-renderer Image repository"
+  default     = "grafana/grafana-image-renderer"
+}
+
+variable "image_renderer_image_tag" {
+  description = "image-renderer Image tag"
+  default     = "latest"
+}
+
+variable "image_renderer_env" {
+  description = "image-renderer extra environment variables"
+  default = {
+    HTTP_HOST = "0.0.0.0"
+  }
+}
+
+variable "image_renderer_service_account" {
+  description = "image-renderer deployment serviceAccount"
+  default     = ""
+}
+
+variable "image_renderer_security_context" {
+  description = "image-renderer deployment securityContext"
+  default     = {}
+}
+
+variable "image_renderer_port" {
+  description = "image-renderer service port used by both service and deployment"
+  default     = 8081
+}
+
+variable "image_renderer_target_port" {
+  description = "image-renderer service targetPort used by both service and deployment"
+  default     = 8081
+}
+
+variable "image_renderer_resources" {
+  description = "Resources for image-renderer container"
+  default     = {}
 }
