@@ -574,11 +574,10 @@ namespaceOverride: ""
 ##
 revisionHistoryLimit: 10
 
-%{ if image_renderer_enabled ~}
 ## Add a seperate remote image renderer deployment/service
 imageRenderer:
   # Enable the image-renderer deployment & service
-  enabled: true
+  enabled: ${image_renderer_enabled}
   replicas: ${image_renderer_replicas}
   image:
     # image-renderer Image repository
@@ -632,4 +631,3 @@ imageRenderer:
 #   requests:
 #     cpu: 50m
 #     memory: 50Mi
-%{ endif ~}
