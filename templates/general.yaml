@@ -494,7 +494,7 @@ smtp:
 sidecar:
   image:
     repository: quay.io/kiwigrid/k8s-sidecar
-    tag: 1.12.2
+    tag: 1.12.3
     sha: ""
   imagePullPolicy: IfNotPresent
   resources: {}
@@ -577,38 +577,42 @@ revisionHistoryLimit: 10
 ## Add a seperate remote image renderer deployment/service
 imageRenderer:
   # Enable the image-renderer deployment & service
-  enabled: false
-  replicas: 1
+  enabled: ${image_renderer_enabled}
+  replicas: ${image_renderer_replicas}
   image:
     # image-renderer Image repository
-    repository: grafana/grafana-image-renderer
+    repository: ${image_renderer_image_repository}
     # image-renderer Image tag
-    tag: latest
+    tag: ${image_renderer_image_tag}
     # image-renderer Image sha (optional)
     sha: ""
     # image-renderer ImagePullPolicy
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   # extra environment variables
-  env:
-    HTTP_HOST: "0.0.0.0"
-    # RENDERING_ARGS: --disable-gpu,--window-size=1280x758
+  env: ${image_renderer_env}
+    # HTTP_HOST: "0.0.0.0"
+    # RENDERING_ARGS: --no-sandbox,--disable-gpu,--window-size=1280x758
     # RENDERING_MODE: clustered
   # image-renderer deployment serviceAccount
-  serviceAccountName: ""
+  serviceAccountName: ${image_renderer_service_account}
   # image-renderer deployment securityContext
-  securityContext: {}
+  securityContext: ${image_renderer_security_context}
   # image-renderer deployment Host Aliases
   hostAliases: []
   # image-renderer deployment priority class
-  priorityClassName: ''
+  priorityClassName: ${image_renderer_priority_class_name}
+  # image-renderer deployment annotations
+  annotations: ${image_renderer_annotations}
+  # image-renderer pod annotations
+  podAnnotations: ${image_renderer_pod_annotations}
   service:
     # Enable the image-renderer service
     enabled: true
     # image-renderer service port name
     portName: 'http'
     # image-renderer service port used by both service and deployment
-    port: 8081
-    targetPort: 8081
+    port: ${image_renderer_port}
+    targetPort: ${image_renderer_target_port}
   # In case a sub_path is used this needs to be added to the image renderer callback
   grafanaSubPath: ""
   # name of the image-renderer port on the pod
@@ -620,7 +624,7 @@ imageRenderer:
     limitIngress: true
     # Enable a NetworkPolicy to limit outbound traffic to only the created grafana pods
     limitEgress: false
-  resources: {}
+  resources: ${image_renderer_resources}
 #   limits:
 #     cpu: 100m
 #     memory: 100Mi
