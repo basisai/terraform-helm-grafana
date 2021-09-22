@@ -88,15 +88,18 @@ locals {
     smtp_user_key        = var.smtp_user_key
     smtp_password_key    = var.smtp_password_key
 
-    image_renderer_enabled          = var.image_renderer_enabled
-    image_renderer_replicas         = var.image_renderer_replicas
-    image_renderer_image_repository = var.image_renderer_image_repository
-    image_renderer_image_tag        = var.image_renderer_image_tag
-    image_renderer_service_account  = var.image_renderer_service_account
-    image_renderer_port             = var.image_renderer_port
-    image_renderer_target_port      = var.image_renderer_target_port
-    image_renderer_env              = jsonencode(var.image_renderer_env)
-    image_renderer_security_context = jsonencode(var.image_renderer_security_context)
-    image_renderer_resources        = jsonencode(var.image_renderer_resources)
+    image_renderer_enabled             = var.image_renderer_enabled
+    image_renderer_replicas            = var.image_renderer_replicas
+    image_renderer_image_repository    = var.image_renderer_image_repository
+    image_renderer_image_tag           = var.image_renderer_image_tag
+    image_renderer_service_account     = var.image_renderer_service_account
+    image_renderer_port                = var.image_renderer_port
+    image_renderer_target_port         = var.image_renderer_target_port
+    image_renderer_priority_class_name = var.image_renderer_priority_class_name
+    image_renderer_env                 = jsonencode(var.image_renderer_env)
+    image_renderer_annotations         = jsonencode(var.image_renderer_annotations)
+    image_renderer_pod_annotations     = jsonencode(var.image_renderer_pod_annotations)
+    image_renderer_security_context    = jsonencode(var.image_renderer_security_context)
+    image_renderer_resources           = jsonencode(var.image_renderer_resources)
   }
 }

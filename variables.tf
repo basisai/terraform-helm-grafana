@@ -363,6 +363,11 @@ variable "image_renderer_service_account" {
   default     = ""
 }
 
+variable "image_renderer_priority_class_name" {
+  description = "image-renderer deployment priority class"
+  default     = ""
+}
+
 variable "image_renderer_security_context" {
   description = "image-renderer deployment securityContext"
   default     = {}
@@ -380,5 +385,15 @@ variable "image_renderer_target_port" {
 
 variable "image_renderer_resources" {
   description = "Resources for image-renderer container"
+  default     = {}
+}
+
+variable "image_renderer_annotations" {
+  description = "image-renderer deployment annotations"
+  default     = {}
+}
+
+variable "image_renderer_pod_annotations" {
+  description = "image-renderer pod annotations"
   default     = {}
 }

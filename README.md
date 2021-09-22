@@ -15,7 +15,7 @@ This module makes use of the [community](https://github.com/grafana/helm-charts/
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | ~> 2.1 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.3.0 |
 
 ## Modules
 
@@ -53,11 +53,14 @@ No modules.
 | <a name="input_extra_volume_mounts"></a> [extra\_volume\_mounts](#input\_extra\_volume\_mounts) | Additional grafana server volume mounts | `list` | `[]` | no |
 | <a name="input_image"></a> [image](#input\_image) | Docker Image for Grafana | `string` | `"grafana/grafana"` | no |
 | <a name="input_image_pull_policy"></a> [image\_pull\_policy](#input\_image\_pull\_policy) | Image Pull Policy for Grafana | `string` | `"IfNotPresent"` | no |
+| <a name="input_image_renderer_annotations"></a> [image\_renderer\_annotations](#input\_image\_renderer\_annotations) | image-renderer deployment annotations | `map` | `{}` | no |
 | <a name="input_image_renderer_enabled"></a> [image\_renderer\_enabled](#input\_image\_renderer\_enabled) | Enable the image-renderer deployment and service | `bool` | `true` | no |
 | <a name="input_image_renderer_env"></a> [image\_renderer\_env](#input\_image\_renderer\_env) | image-renderer extra environment variables | `map` | <pre>{<br>  "HTTP_HOST": "0.0.0.0"<br>}</pre> | no |
 | <a name="input_image_renderer_image_repository"></a> [image\_renderer\_image\_repository](#input\_image\_renderer\_image\_repository) | image-renderer Image repository | `string` | `"grafana/grafana-image-renderer"` | no |
 | <a name="input_image_renderer_image_tag"></a> [image\_renderer\_image\_tag](#input\_image\_renderer\_image\_tag) | image-renderer Image tag | `string` | `"latest"` | no |
+| <a name="input_image_renderer_pod_annotations"></a> [image\_renderer\_pod\_annotations](#input\_image\_renderer\_pod\_annotations) | image-renderer pod annotations | `map` | `{}` | no |
 | <a name="input_image_renderer_port"></a> [image\_renderer\_port](#input\_image\_renderer\_port) | image-renderer service port used by both service and deployment | `number` | `8081` | no |
+| <a name="input_image_renderer_priority_class_name"></a> [image\_renderer\_priority\_class\_name](#input\_image\_renderer\_priority\_class\_name) | image-renderer deployment priority class | `string` | `""` | no |
 | <a name="input_image_renderer_replicas"></a> [image\_renderer\_replicas](#input\_image\_renderer\_replicas) | Number of replicas of image-renderer to run | `number` | `1` | no |
 | <a name="input_image_renderer_resources"></a> [image\_renderer\_resources](#input\_image\_renderer\_resources) | Resources for image-renderer container | `map` | `{}` | no |
 | <a name="input_image_renderer_security_context"></a> [image\_renderer\_security\_context](#input\_image\_renderer\_security\_context) | image-renderer deployment securityContext | `map` | `{}` | no |
