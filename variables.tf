@@ -186,7 +186,7 @@ variable "affinity" {
 
 variable "security_context" {
   description = "Security context for pods defined as a map which will be serialized to JSON."
-  type        = map(any)
+  type        = any
   default = {
     runAsGroup = 472
     runAsUser  = 472
@@ -435,7 +435,7 @@ variable "image_renderer_priority_class_name" {
 
 variable "image_renderer_security_context" {
   description = "image-renderer deployment securityContext"
-  type        = map(any)
+  type        = any
   default     = {}
 }
 
